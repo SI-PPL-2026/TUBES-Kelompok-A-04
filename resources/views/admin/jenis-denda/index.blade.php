@@ -1,4 +1,4 @@
-<x-layout :nav="config('menu.superadmin')" title="Jenis Denda">
+<x-app-layout :nav="config('menu.superadmin')" title="Jenis Denda">
     <x-ui.page-header title="Jenis Denda">
         <x-ui.search placeholder="Cari data denda..." />
         <x-ui.button variant="primary" x-data x-on:click="$dispatch('open-modal', 'tambah-jenis-denda')">
@@ -72,4 +72,4 @@
                 ? 'Jenis denda ini dipakai oleh ' . $j->denda_count . ' data denda sehingga tidak dapat dihapus.'
                 : null" />
     @endforeach
-</x-layout>
+</x-app-layout>

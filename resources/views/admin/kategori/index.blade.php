@@ -1,4 +1,4 @@
-<x-layout :nav="config('menu.superadmin')" title="Kategori Buku">
+<x-app-layout :nav="config('menu.superadmin')" title="Kategori Buku">
     <x-ui.page-header title="Kategori Buku">
         <x-ui.search placeholder="Cari nama kategori..." />
         <x-ui.button variant="primary" x-data x-on:click="$dispatch('open-modal', 'tambah-kategori')">
@@ -70,4 +70,4 @@
                 ? 'Masih ada ' . $k->buku_count . ' buku dalam kategori ini. Pindahkan atau hapus bukunya terlebih dahulu.'
                 : null" />
     @endforeach
-</x-layout>
+</x-app-layout>
