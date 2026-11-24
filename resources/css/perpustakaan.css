@@ -1,31 +1,38 @@
 /*
  * Perpustakaan SMP IT — UI kit
- * Design tokens + component classes used by resources/views/components/ui/*.blade.php.
- * Import once in resources/css/app.css:  @import './perpustakaan.css';
+ * Dipakai oleh resources/views/components/ui/*.blade.php.
+ * Import sekali di resources/css/app.css:  @import './perpustakaan.css';
  *
- * Classes ending in .is-hover / .is-focus / .is-active only exist so the
- * documentation can show a state without the pointer. They are safe to ship.
+ * Class berakhiran .is-hover / .is-focus hanya untuk menampilkan state di
+ * dokumentasi tanpa kursor. Aman ikut di-deploy.
+ *
+ * Daftar isi
+ *   1. Token          6. Badge & tab        11. Date range picker
+ *   2. Base           7. Tabel & paginasi   12. Utilitas
+ *   3. Surface        8. Modal              13. Halaman (auth, form,
+ *   4. Layout         9. Buku                   detail, aturan, dashboard)
+ *   5. Tombol & form 10. Kartu & grafik
  */
 
-/* ========================================================================
-   1. Tokens
-   ======================================================================== */
+/* ==========================================================================
+   1. Token
+   ========================================================================== */
 :root {
-  /* Color (names follow the Figma design system) */
+  /* Warna (nama mengikuti design system Figma) */
   --color-black: #111111;
-  --color-brand: #2f318b;
   --color-white: #ffffff;
-  --color-gray-soft: #f8f8f8;
+  --color-brand: #2f318b;
   --color-brand-soft: #babbe8;
   --color-brand-soft2: #e1e1f5;
   --color-gray: #8a8a8a;
+  --color-gray-soft: #f8f8f8;
   --color-gray-line: #eeeeee;
   --color-red: #de0000;
+  --color-red-soft: #fce4e2;
   --color-green: #1f7a3a;
   --color-green-soft: #e2f3e6;
-  --color-red-soft: #fce4e2;
 
-  /* Chart marks (validated for colour-blind readers; red and green never touch) */
+  /* Grafik (aman untuk buta warna; merah dan hijau tidak bersebelahan) */
   --chart-series: #4b4ebf;
   --chart-good: #2e9150;
   --chart-critical: #de0000;
@@ -34,14 +41,19 @@
   --chart-grid: #eeeeee;
   --chart-baseline: #d6d6d6;
 
-  /* Typography: Inter, letter-spacing -2% */
+  /* Tipografi */
   --font-family: 'Inter', system-ui, -apple-system, sans-serif;
   --tracking: -0.02em;
 
-  /* Radius */
+  /* Bentuk */
   --radius-pill: 999px;
   --radius-card: 24px;
   --radius-input: 16px;
+  --radius-item: 12px;
+
+  /* Efek */
+  --shadow-pop: 0 8px 24px rgb(17 17 17 / 0.08);
+  --transition: 0.15s ease;
 
   /* Layout */
   --container-max: 1280px;
@@ -54,14 +66,14 @@
   }
 }
 
-/* ========================================================================
+/* ==========================================================================
    2. Base
-   ======================================================================== */
+   ========================================================================== */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
-  /* -2% resolved against each element's own size (an inherited em would freeze at 12px) */
+  /* -2% dihitung dari ukuran tiap elemen (em turunan akan beku di 12px) */
   letter-spacing: var(--tracking);
 }
 
@@ -83,31 +95,19 @@ textarea {
   font: inherit;
   color: inherit;
 }
-button {
-  cursor: pointer;
-}
-a {
-  color: inherit;
-  text-decoration: none;
-}
-p,
-h1,
-h2,
-h3 {
-  margin: 0;
-}
-img {
-  display: block;
-}
+
+button { cursor: pointer; }
+a { color: inherit; text-decoration: none; }
+p, h1, h2, h3 { margin: 0; }
+img { display: block; }
+[x-cloak] { display: none !important; }
+
 :focus-visible {
   outline: 2px solid var(--color-brand);
   outline-offset: 2px;
 }
-[x-cloak] {
-  display: none !important;
-}
 
-/* Typography utilities (named after the Figma text styles) */
+/* Utilitas teks (nama mengikuti text style Figma) */
 .t-30-semibold { font-size: 30px; font-weight: 600; line-height: normal; }
 .t-28-semibold { font-size: 28px; font-weight: 600; line-height: normal; }
 .t-16-semibold { font-size: 16px; font-weight: 600; line-height: 1.15; }
@@ -116,18 +116,60 @@ img {
 .t-12-medium   { font-size: 12px; font-weight: 500; line-height: 18px; }
 .t-12-regular  { font-size: 12px; font-weight: 400; line-height: 18px; }
 .t-10-regular  { font-size: 10px; font-weight: 400; line-height: normal; }
+
 .text-gray  { color: var(--color-gray); }
 .text-brand { color: var(--color-brand); }
 .text-red   { color: var(--color-red); }
 
-/* ========================================================================
-   3. Layout
-   ======================================================================== */
+/* ==========================================================================
+   3. Surface — semua panel putih berpinggir bulat didefinisikan sekali
+   ========================================================================== */
+.ui-table-card,
+.ui-card,
+.ui-tile,
+.ui-book-card,
+.ui-modal__panel,
+.ui-rules__card,
+.ui-empty-card,
+.ui-auth__card,
+.ui-auth__role,
+.ui-form-page__card {
+  border-radius: var(--radius-card);
+  background: var(--color-white);
+}
+
+/* Kartu yang border-nya berubah saat di-hover */
+.ui-book-card,
+.ui-auth__role {
+  border: 1px solid transparent;
+  transition: border-color var(--transition);
+}
+.ui-book-card:hover,
+.ui-book-card.is-hover,
+.ui-auth__role:hover,
+.ui-auth__role.is-hover {
+  border-color: var(--color-brand-soft);
+}
+
+/* Layer popup (dropdown, tooltip, date range) */
+.ui-combobox__list,
+.ui-range__panel,
+.ui-columns__col[data-tooltip]:hover::after,
+.ui-columns__col[data-tooltip]:focus-visible::after {
+  border: 1px solid var(--color-gray-line);
+  background: var(--color-white);
+  box-shadow: var(--shadow-pop);
+}
+
+/* ==========================================================================
+   4. Layout
+   ========================================================================== */
 .ui-main-margin {
   display: flex;
   justify-content: center;
   padding: 0 var(--page-gutter);
 }
+
 .ui-main {
   display: flex;
   flex-direction: column;
@@ -136,15 +178,8 @@ img {
   max-width: var(--container-max);
   padding: 24px;
 }
-/* Di layar kecil jarak tepi sudah ditangani .ui-main-margin */
-@media (max-width: 640px) {
-  .ui-main {
-    padding: 24px 0;
-  }
-}
-.ui-section {
-  padding-top: 24px;
-}
+
+.ui-section { padding-top: 24px; }
 
 /* ---------- Header ---------- */
 .ui-header {
@@ -157,6 +192,7 @@ img {
   background: var(--color-white);
   backdrop-filter: blur(8px);
 }
+
 .ui-header__container {
   display: flex;
   align-items: center;
@@ -165,32 +201,21 @@ img {
   max-width: var(--container-max);
   padding: 16px 24px;
 }
+
 .ui-header__brand {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-shrink: 0;
 }
-.ui-header__logo {
-  position: relative;
-  width: 33px;
-  height: 32px;
-  overflow: hidden;
-}
-.ui-header__logo img {
-  position: absolute;
-  top: 0;
-  left: -19.82%;
-  width: 149.55%;
-  height: 112.96%;
-  max-width: none;
-}
+
 .ui-header__name {
   font-size: 15px;
   font-weight: 600;
   line-height: 22.5px;
   white-space: nowrap;
 }
+
 .ui-header__right {
   display: flex;
   flex: 1 0 0;
@@ -199,7 +224,8 @@ img {
   gap: 16px;
   min-width: 0;
 }
-/* Tujuh menu Superadmin bisa melebihi lebar header: digulir, bukan menimpa logo. */
+
+/* Tujuh menu Superadmin bisa melebihi lebar header: digulir, bukan menimpa logo */
 .ui-header__nav {
   display: flex;
   align-items: center;
@@ -209,21 +235,19 @@ img {
   overflow-x: auto;
   scrollbar-width: none;
 }
-.ui-header__nav::-webkit-scrollbar {
-  display: none;
-}
+.ui-header__nav::-webkit-scrollbar { display: none; }
+
 .ui-header__link {
   padding: 8px 4px;
   color: var(--color-gray);
   white-space: nowrap;
 }
-.ui-header__link:hover {
-  color: var(--color-black);
-}
+.ui-header__link:hover { color: var(--color-black); }
 .ui-header__link--active {
   color: var(--color-black);
   font-weight: 500;
 }
+
 .ui-header__account {
   display: flex;
   flex-shrink: 0;
@@ -232,6 +256,7 @@ img {
   padding-left: 16px;
   border-left: 1px solid var(--color-gray-line);
 }
+
 .ui-header__profile {
   display: flex;
   flex-direction: column;
@@ -241,7 +266,64 @@ img {
   white-space: nowrap;
 }
 
+/* Potongan logo: dipakai header dan halaman auth (auth diperbesar 2x) */
+.ui-header__logo,
+.ui-auth__logo {
+  position: relative;
+  overflow: hidden;
+}
+.ui-header__logo { width: 33px; height: 32px; }
+.ui-auth__logo   { width: 66px; height: 64px; margin-bottom: 8px; }
+
+.ui-header__logo img,
+.ui-auth__logo img {
+  position: absolute;
+  top: 0;
+  left: -19.82%;
+  width: 149.55%;
+  height: 112.96%;
+  max-width: none;
+}
+
+/* ---------- Header halaman, toolbar, tautan kembali ---------- */
+.ui-page-header,
+.ui-toolbar,
+.ui-detail__top {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ui-page-header,
+.ui-detail__top { align-items: center; }
+
+.ui-toolbar {
+  align-items: flex-start;
+  padding-top: 24px;
+}
+
+.ui-toolbar__group,
+.ui-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.ui-toolbar__group { gap: 16px; }
+.ui-actions        { gap: 8px; }
+
+.ui-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-gray);
+}
+.ui-back-link:hover { color: var(--color-black); }
+
+/* ---------- Layar kecil ---------- */
 @media (max-width: 640px) {
+  /* Jarak tepi sudah ditangani .ui-main-margin */
+  .ui-main { padding: 24px 0; }
+
   .ui-header__container {
     flex-wrap: wrap;
     padding: 12px 0;
@@ -250,46 +332,14 @@ img {
     flex-basis: 100%;
     justify-content: space-between;
   }
-  .ui-header__nav {
-    flex: 1 1 auto;
-  }
+  .ui-header__nav { flex: 1 1 auto; }
 }
 
-/* ---------- Page header & back link ---------- */
-.ui-page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-.ui-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.ui-toolbar {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-  padding-top: 24px;
-}
-.ui-back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--color-gray);
-}
-.ui-back-link:hover {
-  color: var(--color-black);
-}
+/* ==========================================================================
+   5. Tombol & form
+   ========================================================================== */
 
-/* ========================================================================
-   4. Buttons
-   ======================================================================== */
+/* ---------- Tombol ---------- */
 .ui-btn {
   display: inline-flex;
   align-items: center;
@@ -302,21 +352,17 @@ img {
   font-weight: 600;
   line-height: normal;
   white-space: nowrap;
-  transition: filter 0.15s ease, background-color 0.15s ease;
+  transition: filter var(--transition), background-color var(--transition);
 }
-.ui-btn--primary {
-  background: var(--color-brand);
-  color: var(--color-white);
-}
+
+.ui-btn--primary   { background: var(--color-brand); color: var(--color-white); }
+.ui-btn--danger    { background: var(--color-red);   color: var(--color-white); }
 .ui-btn--secondary {
   border-color: var(--color-gray-line);
   background: var(--color-white);
   color: var(--color-black);
 }
-.ui-btn--danger {
-  background: var(--color-red);
-  color: var(--color-white);
-}
+
 .ui-btn--primary:hover:not(:disabled),
 .ui-btn--danger:hover:not(:disabled),
 .ui-btn--primary.is-hover,
@@ -327,26 +373,21 @@ img {
 .ui-btn--secondary.is-hover {
   background: var(--color-gray-soft);
 }
+
 .ui-btn:disabled {
   cursor: not-allowed;
   opacity: 0.5;
 }
-/* Disabled primary turns Brand-Soft instead of fading (Figma) */
+/* Primary yang disabled berubah jadi Brand-Soft, bukan memudar (Figma) */
 .ui-btn--primary:disabled {
   background: var(--color-brand-soft);
   opacity: 1;
 }
-.ui-btn--block {
-  flex: 1 0 0;
-  min-width: 0;
-}
-/* Icon-only button in the secondary frame (e.g. logout) */
-.ui-btn--icon {
-  width: 38px;
-  padding: 0;
-}
 
-/* Row action icons (edit / delete) */
+.ui-btn--block { flex: 1 0 0; min-width: 0; }
+.ui-btn--icon  { width: 38px; padding: 0; } /* tombol ikon, mis. logout */
+
+/* Ikon aksi baris (ubah / hapus) */
 .ui-icon-btn {
   display: inline-flex;
   padding: 0;
@@ -355,9 +396,8 @@ img {
   background: transparent;
 }
 .ui-icon-btn:hover,
-.ui-icon-btn.is-hover {
-  opacity: 0.7;
-}
+.ui-icon-btn.is-hover { opacity: 0.7; }
+
 .ui-row-actions {
   display: flex;
   align-items: center;
@@ -374,13 +414,9 @@ img {
   font-weight: 500;
   line-height: 18px;
 }
-.ui-link-btn:hover {
-  text-decoration: underline;
-}
+.ui-link-btn:hover { text-decoration: underline; }
 
-/* ========================================================================
-   5. Form fields
-   ======================================================================== */
+/* ---------- Field ---------- */
 .ui-field {
   display: flex;
   flex: 1 0 0;
@@ -389,15 +425,10 @@ img {
   width: 100%;
   min-width: 0;
 }
-.ui-field__label {
-  color: var(--color-gray);
-}
-.ui-field__hint {
-  color: var(--color-gray);
-}
-.ui-field__error {
-  color: var(--color-red);
-}
+.ui-field__label,
+.ui-field__hint  { color: var(--color-gray); }
+.ui-field__error { color: var(--color-red); }
+
 .ui-field-row {
   display: flex;
   align-items: flex-start;
@@ -411,6 +442,7 @@ img {
   }
 }
 
+/* ---------- Input ---------- */
 .ui-control {
   width: 100%;
   height: 40px;
@@ -422,44 +454,61 @@ img {
   font-size: 12px;
   line-height: 18px;
   outline: none;
-  transition: border-color 0.15s ease;
+  transition: border-color var(--transition);
 }
-.ui-control::placeholder {
-  color: var(--color-gray);
-}
+.ui-control::placeholder { color: var(--color-gray); }
+
 .ui-control:hover,
-.ui-control.is-hover {
-  border-color: var(--color-brand-soft);
-}
+.ui-control.is-hover { border-color: var(--color-brand-soft); }
+
 .ui-control:focus,
-.ui-control.is-focus {
-  border-color: var(--color-brand);
-}
+.ui-control.is-focus { border-color: var(--color-brand); }
+
 .ui-control:disabled {
   background: var(--color-gray-soft);
   color: var(--color-gray);
   cursor: not-allowed;
 }
+
 .ui-control--invalid,
-.ui-control--invalid:hover {
-  border-color: var(--color-red);
-}
+.ui-control--invalid:hover { border-color: var(--color-red); }
+
 .ui-control--textarea {
   height: 72px;
   min-height: 72px;
   resize: vertical;
 }
+
 .ui-control--static {
   display: flex;
   align-items: center;
   background: var(--color-gray-soft);
 }
 
-/* Inputs with a trailing caret (date, combobox) */
+/* Pemilih berkas CSV di popup impor */
+.ui-control--file {
+  height: auto;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+.ui-control--file::file-selector-button {
+  margin-right: 12px;
+  padding: 4px 12px;
+  border: 1px solid var(--color-gray-line);
+  border-radius: var(--radius-pill);
+  background: var(--color-gray-soft);
+  color: var(--color-black);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Input dengan panah di kanan (tanggal, combobox) */
 .ui-control-wrap {
   position: relative;
   width: 100%;
 }
+
 .ui-control__caret {
   position: absolute;
   top: 50%;
@@ -467,18 +516,16 @@ img {
   transform: translateY(-50%);
   pointer-events: none;
 }
-.ui-control__caret--open {
-  transform: translateY(-50%) rotate(180deg);
-}
+.ui-control__caret--open { transform: translateY(-50%) rotate(180deg); }
+
 .ui-control--date,
-.ui-control--combobox {
-  padding-right: 42px;
-}
+.ui-control--combobox { padding-right: 42px; }
+
 .ui-control--date {
   position: relative;
   cursor: pointer;
 }
-/* Stretch the native calendar trigger invisibly over the whole input */
+/* Pemicu kalender bawaan dibentangkan tak terlihat di atas seluruh input */
 .ui-control--date::-webkit-calendar-picker-indicator {
   position: absolute;
   inset: 0;
@@ -487,11 +534,10 @@ img {
   opacity: 0;
   cursor: pointer;
 }
-.ui-control--combobox {
-  text-overflow: ellipsis;
-}
 
-/* Combobox dropdown */
+.ui-control--combobox { text-overflow: ellipsis; }
+
+/* ---------- Dropdown combobox ---------- */
 .ui-combobox__list {
   position: absolute;
   top: calc(100% + 4px);
@@ -503,32 +549,29 @@ img {
   padding: 4px;
   overflow-y: auto;
   list-style: none;
-  border: 1px solid var(--color-gray-line);
   border-radius: var(--radius-input);
-  background: var(--color-white);
-  box-shadow: 0 8px 24px rgb(17 17 17 / 0.08);
 }
 .ui-combobox__list--static {
   position: static;
   margin-top: 4px;
 }
+
 .ui-combobox__option {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   padding: 10px 12px;
-  border-radius: 12px;
+  border-radius: var(--radius-item);
   cursor: pointer;
 }
-.ui-combobox__option--active {
-  background: var(--color-gray-soft);
-}
+.ui-combobox__option--active { background: var(--color-gray-soft); }
 .ui-combobox__option--selected {
   background: var(--color-brand-soft2);
   color: var(--color-brand);
   font-weight: 500;
 }
+
 .ui-combobox__label {
   min-width: 0;
   overflow: hidden;
@@ -545,7 +588,7 @@ img {
   color: var(--color-gray);
 }
 
-/* Search (pill, borderless) */
+/* ---------- Pencarian (pil, tanpa border) ---------- */
 .ui-search {
   width: 203.5px;
   height: 36px;
@@ -556,23 +599,15 @@ img {
   font-size: 12px;
   line-height: 18px;
 }
-.ui-search::placeholder {
-  color: var(--color-gray);
-}
+.ui-search::placeholder { color: var(--color-gray); }
+
 @media (max-width: 640px) {
-  .ui-search {
-    width: 100%;
-  }
-  .ui-book--lg {
-    width: 100%;
-    max-width: 320px;
-    height: 360px;
-  }
+  .ui-search { width: 100%; }
 }
 
-/* ========================================================================
-   6. Badge & tabs
-   ======================================================================== */
+/* ==========================================================================
+   6. Badge & tab
+   ========================================================================== */
 .ui-badge {
   display: inline-flex;
   align-items: center;
@@ -584,10 +619,10 @@ img {
   line-height: 18px;
   white-space: nowrap;
 }
-.ui-badge--green { background: var(--color-green-soft); color: var(--color-green); }
-.ui-badge--red   { background: var(--color-red-soft);   color: var(--color-red); }
+.ui-badge--green { background: var(--color-green-soft);  color: var(--color-green); }
+.ui-badge--red   { background: var(--color-red-soft);    color: var(--color-red); }
 .ui-badge--brand { background: var(--color-brand-soft2); color: var(--color-brand); }
-.ui-badge--gray  { background: var(--color-gray-line);  color: var(--color-gray); }
+.ui-badge--gray  { background: var(--color-gray-line);   color: var(--color-gray); }
 
 .ui-tabs {
   display: inline-flex;
@@ -601,6 +636,7 @@ img {
   background: var(--color-gray-line);
   scrollbar-width: none;
 }
+
 .ui-tabs__item {
   display: inline-flex;
   align-items: center;
@@ -610,38 +646,38 @@ img {
   color: var(--color-gray);
   white-space: nowrap;
 }
-.ui-tabs__item:hover {
-  color: var(--color-black);
-}
+.ui-tabs__item:hover { color: var(--color-black); }
 .ui-tabs__item--active {
   background: var(--color-white);
   color: var(--color-black);
   font-weight: 500;
 }
+
 .ui-tabs__count {
   color: var(--color-gray);
   font-weight: 400;
 }
 
-/* ========================================================================
-   7. Table
-   ======================================================================== */
+/* ==========================================================================
+   7. Tabel & paginasi
+   ========================================================================== */
 .ui-table-card {
   width: 100%;
   overflow: hidden;
-  border-radius: var(--radius-card);
-  background: var(--color-white);
 }
+
 .ui-table-scroll {
-  position: relative; /* agar .sr-only di header tabel tidak ikut melebarkan halaman */
+  position: relative; /* supaya .sr-only di header tabel tidak melebarkan halaman */
   overflow-x: auto;
 }
+
 .ui-table {
   width: 100%;
   min-width: 760px;
   border-collapse: collapse;
   table-layout: fixed;
 }
+
 .ui-table th,
 .ui-table td {
   padding: 12px 20px;
@@ -657,31 +693,35 @@ img {
   color: var(--color-gray);
   font-weight: 400;
 }
-.ui-table td {
-  height: 51px;
+.ui-table td { height: 51px; }
+.ui-table tbody tr:last-child td { border-bottom: 0; }
+
+.ui-table__muted { color: var(--color-gray); }
+.ui-table__wrap  { white-space: normal !important; }
+
+.ui-table__link { color: var(--color-black); }
+.ui-table__link:hover {
+  color: var(--color-brand);
+  text-decoration: underline;
 }
-.ui-table tbody tr:last-child td {
-  border-bottom: 0;
-}
-.ui-table__muted {
-  color: var(--color-gray);
-}
-.ui-table__wrap {
-  white-space: normal !important;
-}
-.ui-table__clickable {
-  cursor: pointer;
-}
-.ui-table__clickable:hover td {
-  background: var(--color-gray-soft);
-}
+
+.ui-table__clickable { cursor: pointer; }
+.ui-table__clickable:hover td { background: var(--color-gray-soft); }
+
 .ui-table__empty {
   height: 120px !important;
   color: var(--color-gray);
   text-align: center !important;
 }
 
-/* Pagination (footer of the table card, shown only when there are more than 15 rows) */
+/* Keadaan kosong untuk daftar non-tabel (mis. grid buku) */
+.ui-empty-card {
+  padding: 48px 20px;
+  color: var(--color-gray);
+  text-align: center;
+}
+
+/* ---------- Paginasi (muncul bila baris lebih dari 15) ---------- */
 .ui-pagination {
   display: flex;
   align-items: center;
@@ -691,16 +731,14 @@ img {
   padding: 12px 20px;
   border-top: 1px solid var(--color-gray-line);
 }
-.ui-pagination__range {
-  color: var(--color-gray);
-  font-size: 12px;
-  line-height: 18px;
-}
+.ui-pagination__range { color: var(--color-gray); }
+
 .ui-pagination__pages {
   display: flex;
   align-items: center;
   gap: 4px;
 }
+
 .ui-pagination__btn {
   display: inline-flex;
   align-items: center;
@@ -713,9 +751,7 @@ img {
   font-size: 12px;
   font-weight: 500;
 }
-.ui-pagination__btn:hover {
-  background: var(--color-gray-soft);
-}
+.ui-pagination__btn:hover { background: var(--color-gray-soft); }
 .ui-pagination__btn--active,
 .ui-pagination__btn--active:hover {
   background: var(--color-brand-soft2);
@@ -725,18 +761,17 @@ img {
   opacity: 0.35;
   pointer-events: none;
 }
-.ui-pagination__next {
-  transform: rotate(180deg);
-}
+
+.ui-pagination__next { transform: rotate(180deg); }
 .ui-pagination__gap {
   min-width: 20px;
   color: var(--color-gray);
   text-align: center;
 }
 
-/* ========================================================================
+/* ==========================================================================
    8. Modal (popup)
-   ======================================================================== */
+   ========================================================================== */
 .ui-modal {
   position: fixed;
   inset: 0;
@@ -748,6 +783,7 @@ img {
   overflow-y: auto;
   background: rgb(17 17 17 / 0.5);
 }
+
 .ui-modal__panel,
 .ui-modal__form {
   display: flex;
@@ -759,27 +795,15 @@ img {
   max-width: 100%;
   margin: auto;
   padding: 24px;
-  border-radius: var(--radius-card);
-  background: var(--color-white);
 }
+
 .ui-modal__head {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 16px;
 }
-.ui-modal__icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 100px;
-  background: var(--color-brand-soft2);
-}
-.ui-modal__icon--red {
-  background: var(--color-red-soft);
-}
+
 .ui-modal__text {
   display: flex;
   flex-direction: column;
@@ -787,15 +811,30 @@ img {
   width: 100%;
   text-align: center;
 }
+
 .ui-modal__footer {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-/* ========================================================================
-   9. Book
-   ======================================================================== */
+/* Lingkaran ikon: dipakai modal dan halaman auth */
+.ui-modal__icon,
+.ui-auth__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-pill);
+  background: var(--color-brand-soft2);
+}
+.ui-modal__icon--red { background: var(--color-red-soft); }
+
+/* ==========================================================================
+   9. Buku
+   ========================================================================== */
 .ui-book {
   display: flex;
   flex-direction: column;
@@ -804,7 +843,7 @@ img {
   width: 160px;
   height: 226px;
   padding: 12px;
-  border-radius: 16px;
+  border-radius: var(--radius-input);
   background: var(--color-brand-soft);
   word-break: break-word;
 }
@@ -817,17 +856,22 @@ img {
   font-size: 10px;
   line-height: normal;
 }
+
 .ui-book--lg {
   width: 320px;
   height: 425px;
   padding: 22.5px;
   border-radius: 30px;
 }
-.ui-book--lg .ui-book__title {
-  font-size: 30px;
-}
-.ui-book--lg .ui-book__author {
-  font-size: 18.75px;
+.ui-book--lg .ui-book__title  { font-size: 30px; }
+.ui-book--lg .ui-book__author { font-size: 18.75px; }
+
+@media (max-width: 640px) {
+  .ui-book--lg {
+    width: 100%;
+    max-width: 320px;
+    height: 360px;
+  }
 }
 
 .ui-book-grid {
@@ -846,14 +890,6 @@ img {
   justify-content: center;
   height: 350px;
   padding: 20px;
-  border: 1px solid transparent;
-  border-radius: var(--radius-card);
-  background: var(--color-white);
-  transition: border-color 0.15s ease;
-}
-.ui-book-card:hover,
-.ui-book-card.is-hover {
-  border-color: var(--color-brand-soft);
 }
 .ui-book-card__meta {
   display: flex;
@@ -868,17 +904,15 @@ img {
   padding: 24px 0 20px;
 }
 
-/* ========================================================================
-   10. Dashboard: card, stat tile, charts
-   ======================================================================== */
+/* ==========================================================================
+   10. Kartu, tile statistik, grafik
+   ========================================================================== */
 .ui-card {
   display: flex;
   flex-direction: column;
   gap: 20px;
   min-width: 0;
   padding: 24px;
-  border-radius: var(--radius-card);
-  background: var(--color-white);
 }
 .ui-card__text {
   display: flex;
@@ -886,20 +920,19 @@ img {
   gap: 4px;
 }
 
+/* ---------- Tile statistik ---------- */
 .ui-tile {
   display: flex;
   flex-direction: column;
   gap: 4px;
   min-width: 0;
   padding: 20px;
-  border-radius: var(--radius-card);
-  background: var(--color-white);
 }
 .ui-tile__label,
-.ui-tile__sub {
-  color: var(--color-gray);
-}
-/* Proportional figures on standalone values */
+.ui-tile__sub,
+.ui-tile__versus { color: var(--color-gray); }
+.ui-tile__versus { font-weight: 400; }
+
 .ui-tile__value {
   padding: 4px 0 2px;
   font-size: 28px;
@@ -907,18 +940,13 @@ img {
   line-height: 1.15;
   white-space: nowrap;
 }
-.ui-tile__delta {
-  font-weight: 500;
-}
-.ui-tile__delta--good { color: var(--color-green); }
-.ui-tile__delta--bad { color: var(--color-red); }
-.ui-tile__delta--neutral { color: var(--color-gray); }
-.ui-tile__versus {
-  color: var(--color-gray);
-  font-weight: 400;
-}
 
-/* Meter: a ratio against a limit; the track is a lighter step of the same hue */
+.ui-tile__delta { font-weight: 500; }
+.ui-tile__delta--good    { color: var(--color-green); }
+.ui-tile__delta--bad     { color: var(--color-red); }
+.ui-tile__delta--neutral { color: var(--color-gray); }
+
+/* ---------- Meter: rasio terhadap batas; track = warna yang sama, lebih terang ---------- */
 .ui-meter {
   display: flex;
   flex-direction: column;
@@ -929,33 +957,30 @@ img {
   align-items: baseline;
   justify-content: space-between;
 }
-.ui-meter__label {
-  font-weight: 500;
-}
+.ui-meter__label  { font-weight: 500; }
+.ui-meter__detail { color: var(--color-gray); }
 .ui-meter__value {
   font-size: 16px;
   font-weight: 600;
   line-height: 1.15;
 }
+
+.ui-meter__track,
+.ui-meter__fill { border-radius: 4px; }
 .ui-meter__track {
   height: 10px;
   overflow: hidden;
-  border-radius: 4px;
   background: var(--chart-track);
 }
 .ui-meter__fill {
   display: block;
   height: 100%;
-  border-radius: 4px;
   background: var(--chart-series);
 }
 .ui-meter--good .ui-meter__track { background: var(--chart-track-good); }
-.ui-meter--good .ui-meter__fill { background: var(--chart-good); }
-.ui-meter__detail {
-  color: var(--color-gray);
-}
+.ui-meter--good .ui-meter__fill  { background: var(--chart-good); }
 
-/* Bar list: ranking with the value at the bar's tip */
+/* ---------- Daftar bar: peringkat dengan nilai di ujung bar ---------- */
 .ui-bar-list {
   display: flex;
   flex-direction: column;
@@ -993,26 +1018,23 @@ img {
   flex-shrink: 0;
   min-width: 2px;
   height: 10px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: var(--chart-series);
 }
-.ui-bar-list__row:hover .ui-bar-list__fill {
-  opacity: 0.8;
-}
+.ui-bar-list__row:hover .ui-bar-list__fill { opacity: 0.8; }
 .ui-bar-list__value {
   font-weight: 500;
   font-variant-numeric: tabular-nums;
 }
 
-/* Column chart (pure HTML/CSS, no JS) */
+/* ---------- Grafik kolom (HTML/CSS murni, tanpa JS) ---------- */
 .ui-columns {
   display: grid;
   grid-template-columns: 32px 1fr;
   grid-template-rows: 200px 24px;
 }
-.ui-columns__axis {
-  position: relative;
-}
+
+.ui-columns__axis { position: relative; }
 .ui-columns__tick {
   position: absolute;
   right: 8px;
@@ -1021,6 +1043,7 @@ img {
   font-size: 11px;
   font-variant-numeric: tabular-nums;
 }
+
 .ui-columns__plot {
   position: relative;
   display: flex;
@@ -1033,6 +1056,7 @@ img {
   left: 0;
   border-top: 1px solid var(--chart-grid);
 }
+
 .ui-columns__col {
   position: relative;
   display: flex;
@@ -1044,15 +1068,21 @@ img {
 .ui-columns__bar {
   position: relative;
   width: min(24px, 60%);
-  height: var(--h); /* set per column: style="--h: 40%" */
+  height: var(--h); /* diisi per kolom: style="--h: 40%" */
   min-height: 1px;
   border-radius: 4px 4px 0 0;
   background: var(--chart-series);
 }
-.ui-columns__col:hover .ui-columns__bar {
-  opacity: 0.8;
+.ui-columns__col:hover .ui-columns__bar { opacity: 0.8; }
+
+.ui-columns__label {
+  position: absolute;
+  bottom: calc(var(--h) + 4px);
+  font-size: 12px;
+  font-weight: 600;
 }
-/* Tooltip from data-tooltip on hover/focus */
+
+/* Tooltip dari atribut data-tooltip (hover / fokus); gaya kotaknya ada di bagian Surface */
 .ui-columns__col[data-tooltip]:hover::after,
 .ui-columns__col[data-tooltip]:focus-visible::after {
   content: attr(data-tooltip);
@@ -1062,23 +1092,13 @@ img {
   z-index: 5;
   padding: 6px 10px;
   transform: translateX(-50%);
-  border: 1px solid var(--color-gray-line);
-  border-radius: 12px;
-  background: var(--color-white);
-  box-shadow: 0 8px 24px rgb(17 17 17 / 0.08);
+  border-radius: var(--radius-item);
   color: var(--color-black);
   font-size: 12px;
   white-space: nowrap;
 }
-.ui-columns__label {
-  position: absolute;
-  bottom: calc(var(--h) + 4px);
-  font-size: 12px;
-  font-weight: 600;
-}
-.ui-columns__x {
-  display: flex;
-}
+
+.ui-columns__x { display: flex; }
 .ui-columns__x span {
   flex: 1 0 0;
   padding-top: 6px;
@@ -1087,18 +1107,15 @@ img {
   text-align: center;
 }
 
-/* Donut */
+/* ---------- Donut & legenda ---------- */
 .ui-donut {
   position: relative;
   display: flex;
   justify-content: center;
 }
-.ui-donut__slice {
-  transition: opacity 0.12s ease;
-}
-.ui-donut svg:hover .ui-donut__slice:not(:hover) {
-  opacity: 0.45;
-}
+.ui-donut__slice { transition: opacity 0.12s ease; }
+.ui-donut svg:hover .ui-donut__slice:not(:hover) { opacity: 0.45; }
+
 .ui-donut__center {
   position: absolute;
   inset: 0;
@@ -1113,9 +1130,7 @@ img {
   font-weight: 600;
   line-height: 1.15;
 }
-.ui-donut__caption {
-  color: var(--color-gray);
-}
+.ui-donut__caption { color: var(--color-gray); }
 
 .ui-legend {
   display: flex;
@@ -1136,23 +1151,22 @@ img {
   height: 10px;
   border-radius: 2px;
 }
-.ui-legend__value {
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-}
+.ui-legend__value,
+.ui-legend__pct { font-variant-numeric: tabular-nums; }
+.ui-legend__value { font-weight: 500; }
 .ui-legend__pct {
   color: var(--color-gray);
   text-align: right;
-  font-variant-numeric: tabular-nums;
 }
 
-/* ========================================================================
+/* ==========================================================================
    11. Date range picker
-   ======================================================================== */
+   ========================================================================== */
 .ui-range {
   position: relative;
   display: inline-block;
 }
+
 .ui-range__trigger {
   display: inline-flex;
   align-items: center;
@@ -1165,9 +1179,8 @@ img {
   font-weight: 500;
   white-space: nowrap;
 }
-.ui-range__trigger:hover {
-  background: var(--color-gray-soft);
-}
+.ui-range__trigger:hover { background: var(--color-gray-soft); }
+
 .ui-range__panel {
   position: absolute;
   top: calc(100% + 8px);
@@ -1176,14 +1189,10 @@ img {
   width: 340px;
   max-width: calc(100vw - 32px);
   padding: 8px;
-  border: 1px solid var(--color-gray-line);
   border-radius: var(--radius-input);
-  background: var(--color-white);
-  box-shadow: 0 8px 24px rgb(17 17 17 / 0.08);
 }
-.ui-range__panel--static {
-  position: static;
-}
+.ui-range__panel--static { position: static; }
+
 .ui-range__presets {
   margin: 0;
   padding: 0;
@@ -1194,15 +1203,14 @@ img {
   align-items: center;
   justify-content: space-between;
   padding: 10px 12px;
-  border-radius: 12px;
+  border-radius: var(--radius-item);
 }
-.ui-range__preset:hover {
-  background: var(--color-gray-soft);
-}
+.ui-range__preset:hover { background: var(--color-gray-soft); }
 .ui-range__preset--active {
   color: var(--color-brand);
   font-weight: 500;
 }
+
 .ui-range__custom {
   display: flex;
   flex-direction: column;
@@ -1218,14 +1226,12 @@ img {
     left: 0;
     width: calc(100vw - 32px);
   }
-  .ui-range__trigger {
-    max-width: 100%;
-  }
+  .ui-range__trigger { max-width: 100%; }
 }
 
-/* ========================================================================
-   12. Utilities
-   ======================================================================== */
+/* ==========================================================================
+   12. Utilitas
+   ========================================================================== */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -1235,9 +1241,12 @@ img {
   white-space: nowrap;
 }
 
-/* ========================================================================
+/* Pembungkus Alpine yang tidak boleh mengubah tata letak induknya */
+.ui-passthrough { display: contents; }
+
+/* ==========================================================================
    13. Halaman
-   ======================================================================== */
+   ========================================================================== */
 
 /* ---------- Pilih peran & login ---------- */
 .ui-auth {
@@ -1263,37 +1272,7 @@ img {
   gap: 8px;
   text-align: center;
 }
-
-/* Potongan logo sama dengan header, diperbesar 2× */
-.ui-auth__logo {
-  position: relative;
-  width: 66px;
-  height: 64px;
-  margin-bottom: 8px;
-  overflow: hidden;
-}
-.ui-auth__logo img {
-  position: absolute;
-  top: 0;
-  left: -19.82%;
-  width: 149.55%;
-  height: 112.96%;
-  max-width: none;
-}
-
-.ui-auth__icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-pill);
-  background: var(--color-brand-soft2);
-}
-.ui-auth__icon--brand {
-  margin-bottom: 8px;
-}
+.ui-auth__icon--brand { margin-bottom: 8px; }
 
 .ui-auth__roles {
   display: flex;
@@ -1303,24 +1282,14 @@ img {
   padding: 0;
   list-style: none;
 }
-
 .ui-auth__role {
   display: flex;
   align-items: center;
   gap: 16px;
   width: 100%;
   padding: 20px;
-  border: 1px solid transparent;
-  border-radius: var(--radius-card);
-  background: var(--color-white);
   text-align: left;
-  transition: border-color 0.15s ease;
 }
-.ui-auth__role:hover,
-.ui-auth__role.is-hover {
-  border-color: var(--color-brand-soft);
-}
-
 .ui-auth__role-text {
   display: flex;
   flex: 1 0 0;
@@ -1334,8 +1303,6 @@ img {
   flex-direction: column;
   gap: 16px;
   padding: 24px;
-  border-radius: var(--radius-card);
-  background: var(--color-white);
 }
 
 /* ---------- Halaman form ---------- */
@@ -1353,8 +1320,6 @@ img {
   display: flex;
   flex-direction: column;
   padding: 24px;
-  border-radius: var(--radius-card);
-  background: var(--color-white);
 }
 .ui-form-page__fields {
   display: flex;
@@ -1367,24 +1332,13 @@ img {
   gap: 8px;
   padding-top: 28px;
 }
-/* Mengisi separuh <x-ui.field-row> yang kosong agar field pasangannya tidak melebar */
-.ui-form-page__spacer {
-  flex: 1 0 0;
-}
+/* Mengisi separuh .ui-field-row yang kosong agar field pasangannya tidak melebar */
+.ui-form-page__spacer { flex: 1 0 0; }
 @media (max-width: 640px) {
-  .ui-form-page__spacer {
-    display: none;
-  }
+  .ui-form-page__spacer { display: none; }
 }
 
 /* ---------- Halaman detail ---------- */
-.ui-detail__top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-}
 .ui-detail__content {
   display: flex;
   align-items: flex-start;
@@ -1397,13 +1351,18 @@ img {
   align-items: center;
   min-width: 0;
 }
+
+.ui-detail__info,
+.ui-detail__sub {
+  width: 672px;
+  max-width: 100%;
+}
 .ui-detail__info {
   display: flex;
   flex-direction: column;
-  width: 672px;
-  max-width: 100%;
   margin: 0;
 }
+
 .ui-detail__row {
   display: flex;
   align-items: center;
@@ -1411,9 +1370,7 @@ img {
   padding: 12px 0;
   border-bottom: 1px solid var(--color-gray-line);
 }
-.ui-detail__row:last-child {
-  border-bottom: 0;
-}
+.ui-detail__row:last-child { border-bottom: 0; }
 .ui-detail__row dt {
   flex-shrink: 0;
   width: 162px;
@@ -1425,18 +1382,30 @@ img {
   margin: 0;
   font-weight: 500;
 }
+
 .ui-detail__inline {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   font-weight: 400;
 }
+
+.ui-detail__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-weight: 500;
+}
+.ui-detail__link:hover,
+.ui-detail__link.is-hover { color: var(--color-brand); }
+
 .ui-detail__sub {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  width: 672px;
-  max-width: 100%;
   padding-top: 24px;
 }
 .ui-detail__sub-head {
@@ -1444,19 +1413,17 @@ img {
   align-items: center;
   justify-content: space-between;
 }
+
 /* Ikon yang diekspor adalah ArrowLeft; desain memutarnya menghadap kanan */
-.ui-detail__arrow {
-  transform: rotate(180deg);
-}
+.ui-detail__arrow { transform: rotate(180deg); }
+
 @media (max-width: 1024px) {
   .ui-detail__content {
     flex-direction: column;
     align-items: center;
     gap: 32px;
   }
-  .ui-detail__column {
-    width: 100%;
-  }
+  .ui-detail__column { width: 100%; }
 }
 
 /* ---------- Aturan peminjaman ---------- */
@@ -1472,11 +1439,8 @@ img {
   gap: 8px;
   flex-wrap: wrap;
 }
-.ui-rules__card {
-  overflow: hidden;
-  border-radius: var(--radius-card);
-  background: var(--color-white);
-}
+.ui-rules__card { overflow: hidden; }
+
 .ui-rules__list {
   margin: 0;
   padding: 0;
@@ -1489,9 +1453,8 @@ img {
   padding: 14px 20px;
   border-bottom: 1px solid var(--color-gray-line);
 }
-.ui-rules__item:last-child {
-  border-bottom: 0;
-}
+.ui-rules__item:last-child { border-bottom: 0; }
+
 .ui-rules__number {
   display: flex;
   align-items: center;
@@ -1520,36 +1483,29 @@ img {
 }
 
 /* ---------- Dashboard ---------- */
-.ui-dashboard {
+.ui-dashboard,
+.ui-dashboard__body,
+.ui-dashboard__denda {
   display: flex;
   flex-direction: column;
-  gap: 24px;
 }
-.ui-dashboard__body {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.ui-dashboard__tiles {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 8px;
-}
-/* Enam kolom: baris terbagi 4/2, 3/3, 3/3 */
+.ui-dashboard        { gap: 24px; }
+.ui-dashboard__body  { gap: 16px; }
+.ui-dashboard__denda { gap: 20px; }
+
+.ui-dashboard__tiles,
 .ui-dashboard__grid {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 8px;
 }
+.ui-dashboard__tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+/* Enam kolom: baris terbagi 4/2, 3/3, 3/3 */
+.ui-dashboard__grid  { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+
 .ui-dashboard__cell--2 { grid-column: span 2; }
 .ui-dashboard__cell--3 { grid-column: span 3; }
 .ui-dashboard__cell--4 { grid-column: span 4; }
 
-.ui-dashboard__denda {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
 .ui-dashboard__figures {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1561,98 +1517,28 @@ img {
   flex-direction: column;
   gap: 2px;
 }
-.ui-dashboard__figures dt {
-  color: var(--color-gray);
-  font-size: 12px;
-  line-height: 18px;
-}
+.ui-dashboard__figures dt { color: var(--color-gray); }
 .ui-dashboard__figures dd {
   margin: 0;
-  color: var(--color-black);
   font-size: 16px;
   font-weight: 600;
   line-height: 1.15;
 }
+
 .ui-dashboard__empty {
   padding: 24px 0;
   color: var(--color-gray);
-  font-size: 12px;
-  line-height: 18px;
   text-align: center;
 }
 
 @media (max-width: 900px) {
-  .ui-dashboard__tiles {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .ui-dashboard__grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
+  .ui-dashboard__tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ui-dashboard__grid  { grid-template-columns: minmax(0, 1fr); }
+
   .ui-dashboard__cell--2,
   .ui-dashboard__cell--3,
-  .ui-dashboard__cell--4 {
-    grid-column: 1 / -1;
-  }
+  .ui-dashboard__cell--4 { grid-column: 1 / -1; }
 }
 @media (max-width: 560px) {
-  .ui-dashboard__tiles {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-/* ---------- Potongan kecil ---------- */
-/* Keadaan kosong untuk daftar yang bukan tabel (mis. grid buku) */
-.ui-empty-card {
-  padding: 48px 20px;
-  border-radius: var(--radius-card);
-  background: var(--color-white);
-  color: var(--color-gray);
-  text-align: center;
-}
-.ui-toolbar__group {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-.ui-table__link {
-  color: var(--color-black);
-}
-.ui-table__link:hover {
-  color: var(--color-brand);
-  text-decoration: underline;
-}
-/* Pemilih berkas CSV di popup impor */
-.ui-control--file {
-  height: auto;
-  padding: 8px 16px;
-  cursor: pointer;
-}
-.ui-control--file::file-selector-button {
-  margin-right: 12px;
-  padding: 4px 12px;
-  border: 1px solid var(--color-gray-line);
-  border-radius: var(--radius-pill);
-  background: var(--color-gray-soft);
-  color: var(--color-black);
-  font: inherit;
-  font-weight: 500;
-  cursor: pointer;
-}
-.ui-detail__link {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  font-weight: 500;
-}
-.ui-detail__link:hover,
-.ui-detail__link.is-hover {
-  color: var(--color-brand);
-}
-/* Pembungkus Alpine yang tidak boleh ikut mengubah tata letak induknya */
-.ui-passthrough {
-  display: contents;
+  .ui-dashboard__tiles { grid-template-columns: minmax(0, 1fr); }
 }

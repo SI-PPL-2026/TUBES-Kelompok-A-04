@@ -1,3 +1,14 @@
+{{--
+  Header aplikasi: logo + nama, menu sesuai role, nama pengguna, tombol keluar (dengan konfirmasi).
+
+  <x-ui.header :nav="[
+      ['label' => 'Dashboard', 'route' => 'admin.dashboard'],
+      ['label' => 'Buku', 'route' => 'admin.buku.index'],
+      ['label' => 'Kategori', 'route' => 'admin.kategori.index'],
+  ]" />
+
+  Menu aktif ditentukan dari request()->routeIs(route . '*').
+--}}
 @props(['nav' => []])
 
 @php $user = auth()->user(); @endphp

@@ -12,17 +12,17 @@
     <div class="ui-section">
         <x-ui.table caption="Daftar siswa" :paginator="$siswa">
             <x-slot:head>
-                <th>NISN</th>
+                <th style="width: 180px">NISN</th>
                 <th>Nama Siswa</th>
-                <th>Jenis Kelamin</th>
-                <th>Status</th>
+                <th style="width: 180px">Jenis Kelamin</th>
+                <th style="width: 160px">Status</th>
                 <th style="width: 133px"><span class="sr-only">Aksi</span></th>
             </x-slot:head>
 
             @forelse ($siswa as $s)
                 <tr>
                     <td>{{ $s->NISN_siswa }}</td>
-                    <td>{{ $s->nama_siswa }}</td>
+                    <td class="ui-table__wrap">{{ $s->nama_siswa }}</td>
                     <td>{{ $s->jenis_kelamin_siswa }}</td>
                     <td>
                         <x-ui.badge :tone="$s->status_siswa === Siswa::STATUS_AKTIF ? 'green' : 'gray'">
@@ -59,10 +59,10 @@
 
     <x-ui.modal name="impor-siswa" icon="user-circle" title="Impor Data Siswa"
                 description="Gunakan file CSV dengan urutan kolom: NISN, Nama, Jenis Kelamin, Status"
-                :action="route('admin.siswa.impor')">
+                :action="route('admin.siswa.impor')" enctype="multipart/form-data">
         <div class="ui-field">
             <label for="berkas_siswa" class="ui-field__label">File CSV</label>
-            <input id="berkas_siswa" name="berkas" type="file" accept=".csv,text/csv" class="ui-control ui-control--file">
+            <input id="berkas_siswa" name="berkas" type="file" accept=".csv,text/csv" class="ui-control ui-control--file" required>
             <p class="ui-field__hint">Contoh baris: 0081234567, Ahmad Fauzan, Laki-laki, Aktif</p>
         </div>
 
@@ -92,8 +92,6 @@
             maka data siswa ini akan hilang"
             :action="route('admin.siswa.destroy', $s)"
             :blocked-title="'Siswa ' . $s->nama_siswa . ' tidak dapat dihapus'"
-            :blocker="$s->peminjaman_count
-                ? 'Siswa ini memiliki riwayat peminjaman. Ubah statusnya menjadi Tidak Aktif sebagai gantinya.'
-                : null" />
+            :blocker="null" />
     @endforeach
 </x-app-layout>

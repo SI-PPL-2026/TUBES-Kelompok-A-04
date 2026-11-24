@@ -1,3 +1,12 @@
+{{--
+  Aksi di ujung kanan baris tabel: ikon ubah + ikon hapus.
+  Hapus membuka popup konfirmasi lewat event Alpine (lihat <x-ui.confirm-delete>).
+
+  <x-ui.row-actions
+      label="kategori {{ $kategori->nama_kategori }}"
+      :edit="route('kategori.edit', $kategori)"
+      delete-modal="hapus-kategori-{{ $kategori->id_kategori }}" />
+--}}
 @props([
     'label',
     'edit' => null,

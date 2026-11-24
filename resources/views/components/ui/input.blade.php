@@ -1,3 +1,13 @@
+{{--
+  Input teks dengan label, hint, dan pesan error dari validasi Laravel.
+  Error diambil otomatis dari $errors berdasarkan name; nilai lama dari old().
+
+  <x-ui.input label="Judul" name="judul_buku" placeholder="Masukan judul buku" :value="$buku->judul_buku ?? null" />
+  <x-ui.input label="NISN" name="NISN_siswa" inputmode="numeric" hint="Hanya angka" />
+  <x-ui.input label="Password" name="password_pengguna" type="password" />
+
+  States: default · hover · focus · terisi · error · disabled (tambahkan atribut disabled)
+--}}
 @props([
     'label',
     'name',

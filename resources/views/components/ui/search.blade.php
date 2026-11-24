@@ -1,4 +1,10 @@
-=@props([
+{{--
+  Kolom cari berbentuk pill. Bekerja sebagai form GET sehingga hasil bisa dibagikan lewat URL.
+
+  <x-ui.search placeholder="Cari judul atau penulis..." :action="route('buku.index')" />
+  Di controller: $q = $request->string('q');
+--}}
+@props([
     'placeholder' => 'Cari...',
     'name' => 'q',
     'action' => null,

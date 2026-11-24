@@ -1,3 +1,13 @@
+{{--
+  Tombol standar.
+  <x-ui.button variant="primary">Tambah Buku</x-ui.button>
+  <x-ui.button href="{{ route('buku.create') }}" variant="primary">Tambah Buku</x-ui.button>
+  <x-ui.button variant="danger" type="submit">Ya, Hapus</x-ui.button>
+
+  variant: primary | secondary | danger   (default: secondary)
+  block:   true agar tombol mengisi sisa lebar (dipakai berdua di footer popup)
+  href:    jika diisi, dirender sebagai <a>
+--}}
 @props([
     'variant' => 'secondary',
     'block' => false,

@@ -1,3 +1,24 @@
+{{--
+  Dropdown yang bisa dicari (dipakai untuk SEMUA pilihan di sistem: siswa, buku,
+  kategori, jenis denda, status, role, dll). Butuh Alpine.js + uiCombobox() di perpustakaan.js.
+  Nilai terpilih dikirim lewat <input type="hidden" name="...">.
+
+  <x-ui.combobox
+      label="Siswa"
+      name="id_siswa"
+      placeholder="Cari nama atau NISN siswa"
+      empty="Siswa tidak ditemukan"
+      :value="$peminjaman->id_siswa ?? null"
+      :options="$siswa->map(fn ($s) => [
+          'value' => $s->id_siswa,
+          'label' => $s->nama_siswa,
+          'meta'  => $s->NISN_siswa,        // teks abu-abu di kanan (opsional)
+          'keywords' => $s->kelas ?? '',     // ikut dicari tapi tidak ditampilkan (opsional)
+      ])" />
+
+  States: tertutup · terbuka · sedang mencari · opsi aktif (keyboard/hover) · opsi terpilih · kosong · error · disabled
+  Keyboard: ↑ ↓ pindah opsi, Enter pilih, Esc tutup.
+--}}
 @props([
     'label',
     'name',

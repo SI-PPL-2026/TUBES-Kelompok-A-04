@@ -26,8 +26,8 @@ class Siswa extends Model
         'status_siswa',
     ];
 
-    public function peminjaman(): HasMany
-    {
-        return $this->hasMany(Peminjaman::class, 'id_siswa', 'id_siswa');
-    }
+    // public function peminjaman(): HasMany
+    // {
+    //     return $this->hasMany(Peminjaman::class, 'id_siswa', 'id_siswa');
+    // }
 }

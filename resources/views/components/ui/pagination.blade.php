@@ -1,3 +1,14 @@
+{{--
+  Catatan ikon: arrow-right.svg gambarnya menghadap kiri, jadi panah "berikutnya" diputar 180° lewat kelas ui-pagination__next.
+
+  Paginasi tabel: "Menampilkan 1–15 dari 450" + tombol halaman. Tampil otomatis hanya jika
+  datanya lebih dari 15 (satu halaman = tidak ada footer). Dipakai di dalam <x-ui.table>.
+
+  <x-ui.pagination :paginator="$siswa" />
+
+  Controller (maksimal 15 baris per halaman, filter/search ikut terbawa):
+      $siswa = Siswa::query()->when($request->q, ...)->paginate(15)->withQueryString();
+--}}
 @props(['paginator'])
 
 @if ($paginator->hasPages())
