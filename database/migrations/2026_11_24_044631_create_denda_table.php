@@ -15,7 +15,7 @@ return new class extends Migration
             $table->enum('status_denda', ['Belum Lunas', 'Lunas'])->default('Belum Lunas');
             $table->date('tanggal_bayar')->nullable();
             // ERD: satu peminjaman punya paling banyak satu denda.
-            $table->foreignId('id_peminjaman')->unique()->constrained('peminjaman', 'id_peminjaman')->cascadeOnDelete();
+            // $table->foreignId('id_peminjaman')->unique()->constrained('peminjaman', 'id_peminjaman')->cascadeOnDelete();
             $table->foreignId('id_jenis_denda')->constrained('jenis_denda', 'id_jenis_denda');
             $table->timestamps();
         });
