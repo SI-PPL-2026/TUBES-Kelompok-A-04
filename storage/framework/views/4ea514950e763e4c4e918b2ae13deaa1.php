@@ -1,0 +1,1 @@
+components.layout<?php /**PATH D:\College\SEM 5\PPL\Tubes\TUBES-Kelompok-A-04\storage\framework\views/74e44b5b159d28fe693f9ad69e1e4859.blade.php ENDPATH**/ ?>

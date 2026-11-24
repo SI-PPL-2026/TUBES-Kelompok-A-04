@@ -1,0 +1,1 @@
+<?php /**PATH D:\College\SEM 5\PPL\Tubes\TUBES-Kelompok-A-04\resources\views/components/navbar.blade.php ENDPATH**/ ?>
