@@ -9,7 +9,7 @@ return [
         // ['label' => 'Siswa', 'route' => 'admin.siswa.index'],
         // ['label' => 'Pengguna', 'route' => 'admin.pengguna.index'],
         ['label' => 'Jenis Denda', 'route' => 'admin.jenis-denda.index'],
-        // ['label' => 'Aturan', 'route' => 'admin.aturan.index'],
+        ['label' => 'Aturan', 'route' => 'admin.aturan.index'],
     ],
 
     'penjaga' => [
