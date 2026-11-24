@@ -10,6 +10,11 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 });
+
+Route::post('logout', function () {
+    return redirect('/');
+})->name('logout');
+
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('kategori', KategoriController::class)->except(['create', 'edit', 'show']);
 });

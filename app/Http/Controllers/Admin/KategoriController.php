@@ -17,7 +17,7 @@ class KategoriController extends Controller
     public function index() : View
     {
         return view('admin.kategori.index', [
-            'kategori' => KategoriBuku::orderBy('nama_kategori')->get(),
+            'kategori' => KategoriBuku::orderBy('nama_kategori')->paginate(15),
         ]);
     }
 
