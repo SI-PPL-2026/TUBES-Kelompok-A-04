@@ -1,3 +1,13 @@
+{{--
+  Tombol ikon. Dua bentuk:
+  - frame="false" (default): ikon polos, untuk aksi baris tabel (ubah / hapus)
+  - frame="true": ikon di dalam bingkai tombol secondary (mis. tombol keluar di header)
+
+  <x-ui.icon-button icon="pencil-simple" label="Ubah buku Bumi" href="{{ route('buku.edit', $buku) }}" />
+  <x-ui.icon-button icon="sign-out" label="Keluar" frame x-on:click="$dispatch('open-modal', 'logout')" />
+
+  label wajib: dipakai sebagai aria-label karena tombol tidak punya teks.
+--}}
 @props([
     'icon',
     'label',

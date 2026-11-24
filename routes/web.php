@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BukuController;
 use App\Http\Controllers\ItemBukuController;
+use App\Http\Controllers\Admin\AturanController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\KategoriController;
 use App\Http\Controllers\Admin\JenisDendaController;
@@ -33,4 +34,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
 });
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('jenis-denda', JenisDendaController::class)->except(['create', 'edit', 'show']);
+});
+
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::resource('aturan', AturanController::class)->except(['create', 'edit', 'show']);
 });

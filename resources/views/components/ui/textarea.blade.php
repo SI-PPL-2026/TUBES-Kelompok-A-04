@@ -1,3 +1,8 @@
+{{--
+  Text-area 72px untuk deskripsi / keterangan.
+
+  <x-ui.textarea label="Deskripsi" name="deskripsi_kategori" placeholder="Masukkan deskripsi dari kategori" />
+--}}
 @props([
     'label',
     'name',
