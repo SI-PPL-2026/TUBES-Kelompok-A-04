@@ -1,6 +1,7 @@
 <x-layout title="Daftar Buku - Perpustakaan SMP IT">
 
     <x-page-header title="Buku">
+        <x-ui.search placeholder="Cari data pengguna..." />
         <x-ui.button variant="primary" x-data x-on:click="$dispatch('open-modal', 'tambah-pengguna')">
             Button Primary
         </x-ui.button>
