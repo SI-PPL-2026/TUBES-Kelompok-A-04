@@ -1,27 +1,3 @@
-{{--
-  Popup (384px, radius 24, overlay #111 50%). Dibuka dari mana saja dengan event:
-      x-on:click="$dispatch('open-modal', 'tambah-kategori')"
-  Ditutup dengan Esc, klik overlay, atau $dispatch('close-modal', 'tambah-kategori').
-
-  <x-ui.modal name="tambah-kategori" icon="book-bookmark" title="Tambah Kategori Buku"
-              description="Tambahkan setiap kategori dari buku yang anda miliki"
-              :action="route('kategori.store')">
-      <x-ui.input label="Nama Kategori" name="nama_kategori" placeholder="Masukan nama kategori" />
-      <x-ui.textarea label="Deskripsi" name="deskripsi_kategori" placeholder="Masukkan deskripsi dari kategori" />
-
-      <x-slot:footer>
-          <x-ui.button block x-on:click="$dispatch('close-modal', 'tambah-kategori')">Batal</x-ui.button>
-          <x-ui.button block variant="primary" type="submit">Tambah</x-ui.button>
-      </x-slot:footer>
-  </x-ui.modal>
-
-  description: baris baru di dalam teks dirender sebagai <br>
-  icon:   nama file di public/icons (book-bookmark, money-wavy, user-circle, warning-octagon, trash-popup, sign-out-red)
-  tone:   brand (default) | red  -> lingkaran ikon Brand-Soft2 / Red-Soft
-  action: jika diisi, isi popup dibungkus <form method="POST"> lengkap dengan @csrf
-  method: PUT / PATCH / DELETE untuk form update & hapus
-  show:   true agar langsung terbuka (mis. saat validasi gagal: :show="$errors->any()")
---}}
 @props([
     'name',
     'icon' => 'book-bookmark',

@@ -1,17 +1,3 @@
-{{--
-  Popup konfirmasi hapus (ikon trash merah, tombol "Ya, Hapus").
-  Jika data masih dipakai relasi (FK), isi :blocker dengan alasannya:
-  popup berubah jadi pemberitahuan dengan satu tombol "Tutup".
-
-  <x-ui.confirm-delete
-      name="hapus-kategori-{{ $kategori->id_kategori }}"
-      title="Hapus Kategori {{ $kategori->nama_kategori }}?"
-      description="Jika anda menghapus kategori ini, maka kategori ini akan hilang"
-      :action="route('kategori.destroy', $kategori)"
-      :blocker="$kategori->buku()->exists() ? 'Masih ada buku dalam kategori ini.' : null" />
-
-  Contoh pemicu: <x-ui.row-actions ... delete-modal="hapus-kategori-{{ $kategori->id_kategori }}" />
---}}
 @props([
     'name',
     'title',

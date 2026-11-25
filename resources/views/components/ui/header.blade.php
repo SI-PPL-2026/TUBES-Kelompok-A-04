@@ -1,14 +1,3 @@
-{{--
-  Header aplikasi: logo + nama, menu sesuai role, nama pengguna, tombol keluar (dengan konfirmasi).
-
-  <x-ui.header :nav="[
-      ['label' => 'Dashboard', 'route' => 'admin.dashboard'],
-      ['label' => 'Buku', 'route' => 'admin.buku.index'],
-      ['label' => 'Kategori', 'route' => 'admin.kategori.index'],
-  ]" />
-
-  Menu aktif ditentukan dari request()->routeIs(route . '*').
---}}
 @props(['nav' => []])
 
 @php $user = auth()->user(); @endphp
@@ -16,7 +5,7 @@
 <header class="ui-header">
     <div class="ui-header__container">
         <a href="{{ url('/') }}" class="ui-header__brand">
-            <span class="ui-header__logo"><img src="{{ asset('images/logo.png') }}" alt=""></span>
+            <span ><img src="{{ asset('logo.svg') }}" alt=""></span>
             <span class="ui-header__name">Perpustakaan SMP IT</span>
         </a>
 
