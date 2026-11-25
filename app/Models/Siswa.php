@@ -2,14 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Siswa extends Model
 {
-    use HasFactory;
-
     public const JENIS_KELAMIN_LAKI = 'Laki-laki';
     public const JENIS_KELAMIN_PEREMPUAN = 'Perempuan';
     public const STATUS_AKTIF = 'Aktif';
@@ -25,9 +21,4 @@ class Siswa extends Model
         'jenis_kelamin_siswa',
         'status_siswa',
     ];
-
-    // public function peminjaman(): HasMany
-    // {
-    //     return $this->hasMany(Peminjaman::class, 'id_siswa', 'id_siswa');
-    // }
 }
